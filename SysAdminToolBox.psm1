@@ -6,7 +6,7 @@
 ###############################################################################
 
 
-function Load-SysAdminToolBox { 
+function Setup-STBToolbox { 
     param (
        [string]$path 
        
@@ -62,3 +62,38 @@ function STB-LocUserinObject {
 $object | Where-Object { $_.$($VariabletoFind) -eq $username } | Export-Csv -Path "$($ExportDirectory)/$($currentDate)STBToolBoxUserLoc.csv"
 }
 }
+
+
+function STB-UpdateModule {
+
+    $gitRepo = "https://raw.githubusercontent.com/ColbyBedell/SysadminToolbox/refs/heads/master/SysAdminToolBox.psm1"
+    $ModulePath = $env:PSModulePath -split ';'
+    
+    $downloadedVersion = Invoke-WebRequest -Uri $gitRepo -OutFile $ModulePath[0] 
+
+    try {
+        Remove-Module SysAdminToolBox
+        Import-Module "$($modulepath[0])\Sysadmintoolbox.psm1"
+
+   }
+    catch {
+        Write-Host "Error: $($_.Exception.Message)"
+    }
+    finally {
+        Write-Host "Module Updated"
+    }
+
+
+}
+
+#Make a configuration file during setup of the module to switch from OnPrem AD to Entra ID
+function STB-Configuration {
+    param (
+        [string]$configPath
+
+    )
+    
+}
+
+
+# Auto Check for updated from Git repo
