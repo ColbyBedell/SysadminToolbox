@@ -8,12 +8,23 @@
 
 function Setup-STBToolbox { 
     param (
-       [string]$path 
+     [parameter][string]$configFile 
        
     )
-    
+   $configFile = "C:\temp\SysAdminToolBox\config.json"
+    if($configFile) {
+        $config = Get-Content $configFile | ConvertFrom-Json
+    }
+    else {
+        Write-Output "No Config File Found."
+        Write-Information "Creating Config File"
+        $config = @{}
+        $config | Add-Member -MemberType NoteProperty -Name "ADType" -Value "OnPrem"
+        $config | ConvertTo-Json | Out-file $configFile
+    }
 }
-
+#Importing of the Configuration file for Global Variable use
+$global:config = Get-Content "C:\temp\SysAdminToolBox\config.json" | ConvertFrom-Json
 
 function STB-Getfilehash {
     param (
@@ -87,13 +98,7 @@ function STB-UpdateModule {
 }
 
 #Make a configuration file during setup of the module to switch from OnPrem AD to Entra ID
-function STB-Configuration {
-    param (
-        [string]$configPath
 
-    )
-    
-}
 
 
 # Auto Check for updated from Git repo
