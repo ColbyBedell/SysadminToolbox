@@ -8,20 +8,24 @@
 
 function Setup-STBToolbox { 
     param (
-     [parameter][string]$configFile 
+    #  [parameter][string]$configFile 
        
     )
    $configFile = "C:\temp\SysAdminToolBox\config.json"
-    if($configFile) {
+   if (Test-Path $configFile) {
+        Write-Output "Config File Found."
+        Write-Information "Loading Config File"
         $config = Get-Content $configFile | ConvertFrom-Json
+        return $config
     }
     else {
         Write-Output "No Config File Found."
         Write-Information "Creating Config File"
         $config = @{}
         $config | Add-Member -MemberType NoteProperty -Name "ADType" -Value "OnPrem"
-        $config | ConvertTo-Json | Out-file $configFile
-    }
+        $config | ConvertTo-Json | Out-File -FilePath $configFile
+    } 
+    
 }
 #Importing of the Configuration file for Global Variable use
 $global:config = Get-Content "C:\temp\SysAdminToolBox\config.json" | ConvertFrom-Json
