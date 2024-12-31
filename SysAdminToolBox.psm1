@@ -23,12 +23,13 @@ function Setup-STBToolbox {
         Write-Information "Creating Config File"
         $config = @{}
         $config | Add-Member -MemberType NoteProperty -Name "ADType" -Value "OnPrem"
+        $config | Add-Member -MemberType NoteProperty -Name "ExportDIR" -Value "C:\temp\SysAdminToolBox"
         $config | ConvertTo-Json | Out-File -FilePath $configFile
     } 
     
 }
 #Importing of the Configuration file for Global Variable use
-$global:config = Get-Content "C:\temp\SysAdminToolBox\config.json" | ConvertFrom-Json
+$GlobalConfig = Get-Content "C:\temp\SysAdminToolBox\config.json" | ConvertFrom-Json
 
 function STB-Getfilehash {
     param (
@@ -104,5 +105,24 @@ function STB-UpdateModule {
 #Make a configuration file during setup of the module to switch from OnPrem AD to Entra ID
 
 
+function STB-GetUsersGroups {
+    param (
+        [parameter (ValueFromPipeline = $true)][string]$username,
+        [parameter][string]$GlobalConfig,
+        [parameter (ValueFromPipeline = $true)][switch]$Export
 
+    )
+
+    if ($GlobalConfig.ADType -eq "OnPrem") {
+        $user = Get-ADUser -Identity $username
+        return $user
+    }
+    elseif ($GlobalConfig.ADType -eq "EntraID") {
+        $user = Get-MGuser -Identity $username
+        return $user
+    }
+   if ($Export.IsPresent) {
+       $user | Export-Csv -Path "C:\temp\SysAdminToolBox\$($username)User.csv"
+}
+}
 # Auto Check for updated from Git repo
