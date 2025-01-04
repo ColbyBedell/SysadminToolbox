@@ -105,6 +105,7 @@ function STB-UpdateModule {
 #Make a configuration file during setup of the module to switch from OnPrem AD to Entra ID
 
 
+# Need to setup AD server VMs to be able to test and fully develop the on prem side. This also wont work with macOS or Linux.
 function STB-GetUsersGroups {
     param (
         [parameter (ValueFromPipeline = $true)][string]$username,
