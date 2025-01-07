@@ -31,6 +31,16 @@ function Setup-STBToolbox {
 #Importing of the Configuration file for Global Variable use
 $GlobalConfig = Get-Content "C:\temp\SysAdminToolBox\config.json" | ConvertFrom-Json
 
+function STB-TestLogic {
+    param (
+        # Parameter help description
+        # [Parameter(Mandatory = $true)]
+        # [string]
+        # $GlobalConfig
+    )
+    Write-Output $Globalconfig.ADType
+}
+
 function STB-Getfilehash {
     param (
         [string]$path
